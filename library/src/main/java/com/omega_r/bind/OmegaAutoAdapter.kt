@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.omega_r.adapters.OmegaAdapter
 import com.omega_r.adapters.OmegaIdentifiable
 import com.omega_r.adapters.OmegaListAdapter
+import com.omega_r.bind.model.BindModel
 import com.omega_r.libs.omegarecyclerview.OmegaRecyclerView
 import kotlin.reflect.KClass
 
@@ -12,7 +13,7 @@ import kotlin.reflect.KClass
  * Created by Anton Knyazev on 07.04.2019.
  */
 
-
+@Suppress("unused")
 open class OmegaAutoAdapter<M, VH>(
     private val viewHolderFactory: Factory<M, VH>
 ) : OmegaListAdapter<M, VH>() where VH : OmegaRecyclerView.ViewHolder, VH : OmegaListAdapter.ViewHolderBindable<M> {
@@ -24,10 +25,10 @@ open class OmegaAutoAdapter<M, VH>(
         fun <M> create(
             @LayoutRes layoutRes: Int,
             callback: ((M) -> Unit)? = null,
-            parentModel: AutoBindModel<M>? = null,
-            block: AutoBindModel.Builder<M>.() -> Unit
+            parentModel: BindModel<M>? = null,
+            block: BindModel.Builder<M>.() -> Unit
         ): OmegaAutoAdapter<M, ViewHolder<M>> {
-            val bindModel = AutoBindModel.create(parentModel, block)
+            val bindModel = BindModel.create(parentModel, block)
             return OmegaAutoAdapter(ViewHolderFactory(layoutRes, bindModel, callback))
         }
 
@@ -35,16 +36,16 @@ open class OmegaAutoAdapter<M, VH>(
             @LayoutRes layoutRes: Int,
             @LayoutRes swipeMenuLayoutRes: Int,
             callback: ((M) -> Unit)? = null,
-            parentModel: AutoBindModel<M>? = null,
-            block: AutoBindModel.Builder<M>.() -> Unit
+            parentModel: BindModel<M>? = null,
+            block: BindModel.Builder<M>.() -> Unit
         ): OmegaAutoAdapter<M, SwipeViewHolder<M>> {
-            val bindModel = AutoBindModel.create(parentModel, block)
+            val bindModel = BindModel.create(parentModel, block)
             return OmegaAutoAdapter(SwipeViewHolderFactory(layoutRes, swipeMenuLayoutRes, bindModel, callback))
         }
 
         fun <M> create(
             @LayoutRes layoutRes: Int,
-            bindModel: AutoBindModel<M>,
+            bindModel: BindModel<M>,
             callback: ((M) -> Unit)? = null
         ): OmegaAutoAdapter<M, ViewHolder<M>> {
             return OmegaAutoAdapter(ViewHolderFactory(layoutRes, bindModel, callback))
@@ -53,7 +54,7 @@ open class OmegaAutoAdapter<M, VH>(
         fun <M> create(
             @LayoutRes layoutRes: Int,
             @LayoutRes swipeMenuLayoutRes: Int,
-            bindModel: AutoBindModel<M>,
+            bindModel: BindModel<M>,
             callback: ((M) -> Unit)? = null
         ): OmegaAutoAdapter<M, SwipeViewHolder<M>> {
             return OmegaAutoAdapter(SwipeViewHolderFactory(layoutRes, swipeMenuLayoutRes, bindModel, callback))
@@ -85,7 +86,7 @@ open class OmegaAutoAdapter<M, VH>(
     class ViewHolder<M>(
         viewGroup: ViewGroup,
         layoutRes: Int,
-        private val bindModel: AutoBindModel<M>,
+        private val bindModel: BindModel<M>,
         callback: ((M) -> Unit)? = null
     ) : OmegaListAdapter.ViewHolder<M>(viewGroup, layoutRes) {
 
@@ -99,7 +100,7 @@ open class OmegaAutoAdapter<M, VH>(
                     }
                 }
             }
-            bindModel.onCreateView(itemView)
+            bindModel.onViewCreated(itemView)
         }
 
         override fun bind(item: M) {
@@ -113,7 +114,7 @@ open class OmegaAutoAdapter<M, VH>(
         parent: ViewGroup,
         @LayoutRes layoutRes: Int,
         @LayoutRes swipeMenuLayoutRes: Int,
-        private val bindModel: AutoBindModel<M>,
+        private val bindModel: BindModel<M>,
         callback: ((M) -> Unit)? = null
     ) : OmegaListAdapter.SwipeViewHolder<M>(
         parent,
@@ -126,13 +127,13 @@ open class OmegaAutoAdapter<M, VH>(
         init {
             itemView.id = R.id.omega_swipe_menu
             callback?.let {
-                contentView.setClickListener() {
+                contentView.setClickListener {
                     item?.let {
                         callback(it)
                     }
                 }
             }
-            bindModel.onCreateView(itemView)
+            bindModel.onViewCreated(itemView)
         }
 
         override fun bind(item: M) {
@@ -164,7 +165,7 @@ open class OmegaAutoAdapter<M, VH>(
 
     open class ViewHolderFactory<M>(
         private val layoutRes: Int,
-        private val bindModel: AutoBindModel<M>,
+        private val bindModel: BindModel<M>,
         override val callback: ((M) -> Unit)? = null
     ) : Factory<M, ViewHolder<M>>(), Callbackable<M> {
 
@@ -181,7 +182,7 @@ open class OmegaAutoAdapter<M, VH>(
     open class SwipeViewHolderFactory<M>(
         @LayoutRes private val layoutRes: Int,
         @LayoutRes private val swipeMenuLayoutRes: Int,
-        private val bindModel: AutoBindModel<M>,
+        private val bindModel: BindModel<M>,
         override val callback: ((M) -> Unit)? = null
     ) : Factory<M, SwipeViewHolder<M>>(), Callbackable<M> {
 
@@ -216,13 +217,13 @@ open class OmegaAutoAdapter<M, VH>(
             adapter: OmegaAutoAdapter<M, VH>,
             viewType: Int
         ): VH {
-            return map[map.keys.elementAt(viewType)]!!.createViewHolder(parent, adapter, viewType)
+            return map.getValue(map.keys.elementAt(viewType)).createViewHolder(parent, adapter, viewType)
         }
     }
 
     @Suppress("UNCHECKED_CAST")
     class MultiAutoAdapterBuilder<M : Any, VH>(
-        private val parentModel: AutoBindModel<M>? = null
+        private val parentModel: BindModel<M>? = null
     ) where VH : OmegaRecyclerView.ViewHolder, VH : ViewHolderBindable<M> {
 
         private val map = mutableMapOf<KClass<*>, Factory<*, *>>()
@@ -231,20 +232,20 @@ open class OmegaAutoAdapter<M, VH>(
             kClass: KClass<M2>,
             @LayoutRes layoutRes: Int,
             callback: ((M2) -> Unit)? = null,
-            parentModel: AutoBindModel<M2>? = this.parentModel as? AutoBindModel<M2>,
-            block: AutoBindModel.Builder<M2>.() -> Unit
+            parentModel: BindModel<M2>? = this.parentModel as? BindModel<M2>,
+            block: BindModel.Builder<M2>.() -> Unit
         ): MultiAutoAdapterBuilder<M, VH> = apply {
-            map[kClass] = ViewHolderFactory(layoutRes, AutoBindModel.create(parentModel, block), callback)
+            map[kClass] = ViewHolderFactory(layoutRes, BindModel.create(parentModel, block), callback)
         }
 
         fun <M2 : M> add(
             kClass: KClass<M2>,
             @LayoutRes layoutRes: Int,
-            model: AutoBindModel<M2>,
+            model: BindModel<M2>,
             callback: ((M2) -> Unit)? = null,
-            parentModel: AutoBindModel<M2>? = this.parentModel as? AutoBindModel<M2>
+            parentModel: BindModel<M2>? = this.parentModel as? BindModel<M2>
         ) = apply {
-            val modifiedModel = if (parentModel != null) AutoBindModel.create(parentModel, model) else model
+            val modifiedModel = if (parentModel != null) BindModel.create(parentModel, model) else model
             map[kClass] = ViewHolderFactory(layoutRes, modifiedModel, callback)
         }
 
@@ -253,13 +254,13 @@ open class OmegaAutoAdapter<M, VH>(
             @LayoutRes layoutRes: Int,
             @LayoutRes swipeMenuLayoutRes: Int,
             callback: ((M2) -> Unit)? = null,
-            parentModel: AutoBindModel<M2>? = this.parentModel as? AutoBindModel<M2>,
-            block: AutoBindModel.Builder<M2>.() -> Unit
+            parentModel: BindModel<M2>? = this.parentModel as? BindModel<M2>,
+            block: BindModel.Builder<M2>.() -> Unit
         ) = apply {
             map[kClass] = SwipeViewHolderFactory(
                 layoutRes,
                 swipeMenuLayoutRes,
-                AutoBindModel.create(parentModel, block),
+                BindModel.create(parentModel, block),
                 callback
             )
         }
@@ -268,11 +269,11 @@ open class OmegaAutoAdapter<M, VH>(
             kClass: KClass<M2>,
             @LayoutRes layoutRes: Int,
             @LayoutRes swipeMenuLayoutRes: Int,
-            model: AutoBindModel<M2>,
+            model: BindModel<M2>,
             callback: ((M2) -> Unit)? = null,
-            parentModel: AutoBindModel<M2>? = this.parentModel as? AutoBindModel<M2>
+            parentModel: BindModel<M2>? = this.parentModel as? BindModel<M2>
         ) = apply {
-            val modifiedModel = if (parentModel != null) AutoBindModel.create(parentModel, model) else model
+            val modifiedModel = if (parentModel != null) BindModel.create(parentModel, model) else model
 
             map[kClass] = SwipeViewHolderFactory(layoutRes, swipeMenuLayoutRes, modifiedModel, callback)
         }
