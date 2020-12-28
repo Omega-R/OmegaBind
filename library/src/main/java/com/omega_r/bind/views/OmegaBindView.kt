@@ -1,4 +1,4 @@
-package com.omega_r.bind
+package com.omega_r.bind.views
 
 import android.content.Context
 import android.util.AttributeSet

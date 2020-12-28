@@ -1,4 +1,4 @@
-package com.omega_r.bind
+package com.omega_r.bind.adapters
 
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes

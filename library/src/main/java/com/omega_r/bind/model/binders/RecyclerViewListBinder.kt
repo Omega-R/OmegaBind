@@ -2,7 +2,7 @@ package com.omega_r.bind.model.binders
 
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
-import com.omega_r.bind.OmegaAutoAdapter
+import com.omega_r.bind.adapters.OmegaAutoAdapter
 import com.omega_r.bind.model.BindModel
 import com.omega_r.libs.omegarecyclerview.OmegaRecyclerView
 import kotlin.reflect.KProperty
