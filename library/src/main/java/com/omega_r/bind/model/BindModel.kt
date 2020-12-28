@@ -3,9 +3,6 @@ package com.omega_r.bind.model
 import android.app.Activity
 import android.util.SparseArray
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.annotation.LayoutRes
 import com.omega_r.bind.R
 import com.omega_r.bind.model.binders.*
 

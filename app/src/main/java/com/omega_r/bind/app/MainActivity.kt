@@ -6,8 +6,8 @@ import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import com.omega_r.bind.OmegaAutoAdapter
-import com.omega_r.bind.OmegaBindView
+import com.omega_r.bind.adapters.OmegaAutoAdapter
+import com.omega_r.bind.views.OmegaBindView
 import com.omega_r.bind.model.BindModel
 import com.omega_r.bind.model.binders.*
 
@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         bindVisible(R.id.NO_DEBUG) {
             true
         }
-        bindMultiCustom(R.id.NO_DEBUG, R.id.NO_DEBUG) { sparseArray: SparseArray<View>, s: String ->
+        bindMultiCustom(R.id.NO_DEBUG, R.id.NO_DEBUG) { sparseArray: SparseArray<View>, s ->
             sparseArray[R.id.NO_DEBUG]
         }
     }

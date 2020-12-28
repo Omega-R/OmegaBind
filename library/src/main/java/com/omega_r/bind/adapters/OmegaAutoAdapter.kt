@@ -1,10 +1,11 @@
-package com.omega_r.bind
+package com.omega_r.bind.adapters
 
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.omega_r.adapters.OmegaAdapter
 import com.omega_r.adapters.OmegaIdentifiable
 import com.omega_r.adapters.OmegaListAdapter
+import com.omega_r.bind.R
 import com.omega_r.bind.model.BindModel
 import com.omega_r.libs.omegarecyclerview.OmegaRecyclerView
 import kotlin.reflect.KClass
