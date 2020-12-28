@@ -3,6 +3,7 @@ package com.omega_r.bind
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.omega_r.adapters.OmegaListAdapter
+import com.omega_r.bind.model.BindModel
 import com.omega_r.libs.omegarecyclerview.OmegaRecyclerView
 import com.omega_r.libs.omegarecyclerview.sticky_decoration.BaseStickyDecoration
 import com.omega_r.libs.omegarecyclerview.sticky_decoration.StickyAdapter
@@ -10,11 +11,12 @@ import com.omega_r.libs.omegarecyclerview.sticky_decoration.StickyAdapter
 /**
  * Created by Anton Knyazev on 2019-07-12.
  */
+@Suppress("unused", "MemberVisibilityCanBePrivate")
 open class OmegaStickyAutoAdapter<M, VH>(
     viewHolderFactory: Factory<M, VH>,
     private val stickyIdExtractor: (M) -> Long,
     @LayoutRes stickyLayoutRes: Int,
-    stickyBindModel: AutoBindModel<M>
+    stickyBindModel: BindModel<M>
 ) : OmegaAutoAdapter<M, VH>(viewHolderFactory), StickyAdapter<OmegaAutoAdapter.ViewHolder<M>>
         where VH : OmegaRecyclerView.ViewHolder, VH : OmegaListAdapter.ViewHolderBindable<M> {
 
@@ -26,22 +28,22 @@ open class OmegaStickyAutoAdapter<M, VH>(
         fun <M : Any> create(
             @LayoutRes stickyLayoutRes: Int,
             stickyIdExtractor: (M) -> Long,
-            stickyBindModel: AutoBindModel<M>
+            stickyBindModel: BindModel<M>
         ) = StickyAdapterBuilder(stickyLayoutRes, stickyIdExtractor, stickyBindModel)
 
         fun <M : Any> create(
             @LayoutRes stickyLayoutRes: Int,
             stickyIdExtractor: (M) -> Long,
-            parentModel: AutoBindModel<M>? = null,
-            block: AutoBindModel.Builder<M>.() -> Unit
+            parentModel: BindModel<M>? = null,
+            block: BindModel.Builder<M>.() -> Unit
         ): StickyAdapterBuilder<M> {
-            val bindModel = AutoBindModel.create(parentModel, block)
+            val bindModel = BindModel.create(parentModel, block)
             return create(stickyLayoutRes, stickyIdExtractor, bindModel)
         }
 
     }
 
-    private val stickyViewHolderFactory = OmegaAutoAdapter.ViewHolderFactory(stickyLayoutRes, stickyBindModel)
+    private val stickyViewHolderFactory = ViewHolderFactory(stickyLayoutRes, stickyBindModel)
 
     @Suppress("UNCHECKED_CAST")
     override fun onCreateStickyViewHolder(parent: ViewGroup): ViewHolder<M> =
@@ -53,20 +55,20 @@ open class OmegaStickyAutoAdapter<M, VH>(
     }
 
     override fun getStickyId(position: Int) =
-        if (position in 0 until list.size) stickyIdExtractor(list[position]) else NO_STICKY_ID
+        if (position in list.indices) stickyIdExtractor(list[position]) else NO_STICKY_ID
 
     class StickyAdapterBuilder<M : Any>(
         @LayoutRes val stickyLayoutRes: Int,
         val stickyIdExtractor: (M) -> Long,
-        val stickyBindModel: AutoBindModel<M>
+        val stickyBindModel: BindModel<M>
     ) {
 
         constructor(
             stickyLayoutRes: Int,
             stickyIdExtractor: (M) -> Long,
-            parentModel: AutoBindModel<M>? = null,
-            block: AutoBindModel.Builder<M>.() -> Unit
-        ) : this(stickyLayoutRes, stickyIdExtractor, AutoBindModel.create(parentModel, block))
+            parentModel: BindModel<M>? = null,
+            block: BindModel.Builder<M>.() -> Unit
+        ) : this(stickyLayoutRes, stickyIdExtractor, BindModel.create(parentModel, block))
 
         fun <VH> create(viewHolderFactory: Factory<M, VH>): OmegaStickyAutoAdapter<M, VH>
                 where VH : ViewHolderBindable<M>, VH : OmegaRecyclerView.ViewHolder {
@@ -74,7 +76,7 @@ open class OmegaStickyAutoAdapter<M, VH>(
         }
 
         fun <VH> createMulti(
-            parentModel: AutoBindModel<M>? = null,
+            parentModel: BindModel<M>? = null,
             block: MultiAutoAdapterBuilder<M, VH>.() -> Unit
         ): OmegaStickyAutoAdapter<M, VH> where VH : ViewHolderBindable<M>, VH : OmegaRecyclerView.ViewHolder {
             return create(
@@ -87,10 +89,10 @@ open class OmegaStickyAutoAdapter<M, VH>(
         fun create(
             @LayoutRes layoutRes: Int,
             callback: ((M) -> Unit)? = null,
-            parentModel: AutoBindModel<M>? = null,
-            block: AutoBindModel.Builder<M>.() -> Unit
+            parentModel: BindModel<M>? = null,
+            block: BindModel.Builder<M>.() -> Unit
         ): OmegaStickyAutoAdapter<M, ViewHolder<M>> {
-            val bindModel = AutoBindModel.create(parentModel, block)
+            val bindModel = BindModel.create(parentModel, block)
             return create(ViewHolderFactory(layoutRes, bindModel, callback))
         }
 
@@ -98,16 +100,16 @@ open class OmegaStickyAutoAdapter<M, VH>(
             @LayoutRes layoutRes: Int,
             @LayoutRes swipeMenuLayoutRes: Int,
             callback: ((M) -> Unit)? = null,
-            parentModel: AutoBindModel<M>? = null,
-            block: AutoBindModel.Builder<M>.() -> Unit
+            parentModel: BindModel<M>? = null,
+            block: BindModel.Builder<M>.() -> Unit
         ): OmegaStickyAutoAdapter<M, SwipeViewHolder<M>> {
-            val bindModel = AutoBindModel.create(parentModel, block)
+            val bindModel = BindModel.create(parentModel, block)
             return create(SwipeViewHolderFactory(layoutRes, swipeMenuLayoutRes, bindModel, callback))
         }
 
         fun create(
             @LayoutRes layoutRes: Int,
-            bindModel: AutoBindModel<M>,
+            bindModel: BindModel<M>,
             callback: ((M) -> Unit)? = null
         ): OmegaStickyAutoAdapter<M, ViewHolder<M>> {
             return create(ViewHolderFactory(layoutRes, bindModel, callback))
@@ -116,7 +118,7 @@ open class OmegaStickyAutoAdapter<M, VH>(
         fun create(
             @LayoutRes layoutRes: Int,
             @LayoutRes swipeMenuLayoutRes: Int,
-            bindModel: AutoBindModel<M>,
+            bindModel: BindModel<M>,
             callback: ((M) -> Unit)? = null
         ): OmegaStickyAutoAdapter<M, SwipeViewHolder<M>> {
             return create(SwipeViewHolderFactory(layoutRes, swipeMenuLayoutRes, bindModel, callback))
