@@ -14,11 +14,7 @@ open class StringBinder<M>(
     override fun bind(itemView: TextView, item: M) = BinderTextWatcher.runTextChangedTransaction(itemView) {
         val obj: Any? = item.findValue(item, properties)
 
-        if (formatter == null) {
-            itemView.text = obj?.toString()
-        } else {
-            itemView.text = formatter.invoke(obj)
-        }
+        itemView.text = if (formatter == null) obj?.toString() else formatter.invoke(obj)
     }
 }
 

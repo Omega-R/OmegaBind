@@ -22,4 +22,4 @@ fun <M> BindModel.Builder<M>.bindVisible(
     @IdRes id: Int,
     vararg ids: Int,
     queryBlock: (M) -> Boolean
-) = bindBinder(VisibleCustomMultiBinder(id, ids = *ids, queryBlock = queryBlock))
+) = bindBinder(VisibleCustomMultiBinder(id, ids = ids, queryBlock = queryBlock))

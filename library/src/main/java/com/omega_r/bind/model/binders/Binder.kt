@@ -10,12 +10,12 @@ abstract class Binder<V : View, M> {
 
     var viewOptionally: Boolean = false
 
-    open fun dispatchOnCreateView(view: View, viewCache: SparseArray<View>) {
+    internal open fun dispatchOnViewCreated(view: View, viewCache: SparseArray<View>) {
         @Suppress("UNCHECKED_CAST")
-        onCreateView(view as V)
+        onViewCreated(view as V)
     }
 
-    protected open fun onCreateView(itemView: V) {
+    protected open fun onViewCreated(itemView: V) {
         // nothing
     }
 

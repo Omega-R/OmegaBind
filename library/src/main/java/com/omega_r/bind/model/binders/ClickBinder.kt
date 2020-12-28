@@ -11,7 +11,7 @@ open class ClickBinder<M>(
     private val block: (M) -> Unit
 ) : Binder<View, M>() {
 
-    override fun onCreateView(itemView: View) {
+    override fun onViewCreated(itemView: View) {
         val tag = itemView.getTag(R.id.omega_click_bind) as? ClickManager
         if (tag == null) {
             itemView.setTag(R.id.omega_click_bind, ClickManager())

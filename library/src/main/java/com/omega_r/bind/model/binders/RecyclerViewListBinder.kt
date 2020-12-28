@@ -16,8 +16,13 @@ open class RecyclerViewListBinder<M, SM>(
     private val block: BindModel.Builder<SM>.() -> Unit
 ) : Binder<RecyclerView, M>() {
 
-    override fun onCreateView(itemView: RecyclerView) {
-        itemView.adapter = OmegaAutoAdapter.create(layoutRes, callback?.let { Callback(callback) }, parentModel, block)
+    override fun onViewCreated(itemView: RecyclerView) {
+        itemView.adapter = OmegaAutoAdapter.create(
+            layoutRes = layoutRes,
+            callback = callback?.let { Callback(callback) },
+            parentModel = parentModel,
+            block = block
+        )
     }
 
     @Suppress("UNCHECKED_CAST")

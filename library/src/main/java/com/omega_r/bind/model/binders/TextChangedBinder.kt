@@ -5,23 +5,22 @@ import android.view.View
 import android.widget.TextView
 import com.omega_r.bind.model.BindModel
 
-open class TextChangedBinder<E>(override val id: Int, private val block: (E, String) -> Unit) :
-    Binder<TextView, E>() {
+open class TextChangedBinder<E>(override val id: Int, private val block: (E, String) -> Unit) : Binder<TextView, E>() {
 
-    private val autoBinders = mutableListOf<Binder<*, E>>()
+    private val binders = mutableListOf<Binder<*, E>>()
 
-    override fun dispatchOnCreateView(view: View, viewCache: SparseArray<View>) {
-        super.dispatchOnCreateView(view, viewCache)
-        if (autoBinders.isNotEmpty()) {
+    override fun dispatchOnViewCreated(view: View, viewCache: SparseArray<View>) {
+        super.dispatchOnViewCreated(view, viewCache)
+        if (binders.isNotEmpty()) {
             BinderTextWatcher.from<E>(view).let {
                 it.callbacks.add { item: E, _ ->
-                    autoBinders.forEach { callback -> callback.dispatchBind(viewCache, item) }
+                    binders.forEach { callback -> callback.dispatchBind(viewCache, item) }
                 }
             }
         }
     }
 
-    override fun onCreateView(itemView: TextView) {
+    override fun onViewCreated(itemView: TextView) {
         BinderTextWatcher.from<E>(itemView).let {
             it.callbacks.add(block)
             itemView.addTextChangedListener(it)
@@ -33,7 +32,7 @@ open class TextChangedBinder<E>(override val id: Int, private val block: (E, Str
     }
 
     fun addAutoUpdateBinder(vararg binders: Binder<*, E>) {
-        autoBinders += binders
+        this.binders += binders
     }
 
 }

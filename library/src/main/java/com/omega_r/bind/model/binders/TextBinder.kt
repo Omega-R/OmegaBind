@@ -7,10 +7,7 @@ import com.omega_r.libs.omegatypes.Text
 import com.omega_r.libs.omegatypes.setText
 import kotlin.reflect.KProperty
 
-open class TextBinder<M>(
-    override val id: Int,
-    private vararg val properties: KProperty<*>
-) : Binder<TextView, M>() {
+open class TextBinder<M>(override val id: Int, private vararg val properties: KProperty<*>) : Binder<TextView, M>() {
 
     override fun bind(itemView: TextView, item: M) = BinderTextWatcher.runTextChangedTransaction(itemView) {
         val text: Text? = item.findValue(item, properties)

@@ -1,7 +1,11 @@
 package com.omega_r.bind.model
 
+import android.app.Activity
 import android.util.SparseArray
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.annotation.LayoutRes
 import com.omega_r.bind.R
 import com.omega_r.bind.model.binders.*
 
@@ -35,6 +39,9 @@ class BindModel<M>(private val list: List<Binder<*, M>>) {
 
     constructor(vararg binder: Binder<*, M>) : this(binder.toList())
 
+    fun onViewCreated(activity: Activity) {
+        onViewCreated(activity.window.decorView)
+    }
 
     fun onViewCreated(view: View) {
         val viewCache = SparseArray<View>()
@@ -57,10 +64,14 @@ class BindModel<M>(private val list: List<Binder<*, M>>) {
                 }
             } else {
                 viewCache.put(id, childView)
-                array[id].forEach { it.dispatchOnCreateView(childView, viewCache) }
+                array[id].forEach { it.dispatchOnViewCreated(childView, viewCache) }
             }
         }
 
+    }
+
+    fun bind(activity: Activity, item: M) {
+        bind(activity.window.decorView, item)
     }
 
     fun bind(view: View, item: M) {

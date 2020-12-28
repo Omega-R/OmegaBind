@@ -45,10 +45,10 @@ class BinderTextWatcher<E> : TextWatcher {
         // nothing
     }
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+    override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
         if (enabled) {
             item?.let { item ->
-                callbacks.forEach { it(item, s.toString()) }
+                callbacks.forEach { it(item, text.toString()) }
             }
         }
     }

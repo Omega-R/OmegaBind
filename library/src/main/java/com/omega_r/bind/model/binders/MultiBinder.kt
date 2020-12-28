@@ -5,8 +5,7 @@ import android.view.View
 
 abstract class MultiBinder<V : View, M>(final override val id: Int, vararg ids: Int) : Binder<V, M>() {
 
-    val ids = listOf(id, *ids.toTypedArray())
-
+    private val ids = listOf(id, *ids.toTypedArray())
 
     @Suppress("UNCHECKED_CAST")
     override fun dispatchBind(viewCache: SparseArray<View>, item: M) {
