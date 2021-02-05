@@ -41,6 +41,9 @@ abstract class Binder<V : View, M> {
     @Suppress("UNCHECKED_CAST")
     protected fun <T> Any?.findValue(item: Any?, properties: Array<out KProperty<*>>): T? {
         var obj: Any? = item
+        if (obj == null || obj::class.java === Any::class.java) {
+            return null
+        }
         for (property in properties) {
             obj = property.call(obj)
             if (obj == null) {
