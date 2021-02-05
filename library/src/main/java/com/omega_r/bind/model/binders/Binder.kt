@@ -45,6 +45,9 @@ abstract class Binder<V : View, M> {
             obj = property.call(obj)
             if (obj == null) {
                 break
+            } else if (obj::class.java === Any::class.java) {
+                obj = null
+                break
             }
         }
         return obj?.let { it as T }
