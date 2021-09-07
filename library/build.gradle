@@ -47,7 +47,7 @@ dependencies {
     implementation 'com.github.Omega-R.OmegaTypes:omegatypes:2.0.3'
     implementation "com.github.Omega-R.OmegaRecyclerView:omegarecyclerview:1.9.9@aar"
     implementation 'com.github.Omega-R:OmegaClicks:1.0.0'
-    implementation 'com.github.Omega-R:OmegaAdapters:1.0.1'
+    implementation 'com.github.Omega-R:OmegaAdapters:1.0.2'
 
 
     testImplementation 'junit:junit:4.13.2'
