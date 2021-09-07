@@ -127,5 +127,9 @@ open class OmegaStickyAutoAdapter<M, VH>(
 
     }
 
+    override fun onClickStickyViewHolder(id: Long) {
+        // nothing
+    }
+
 
 }
