@@ -21,6 +21,8 @@ open class OmegaAutoAdapter<M, VH>(
 
     companion object {
 
+        private val NULL = ViewHolder::class
+
         const val SWIPE_NO_ID = OmegaAdapter.SwipeViewHolder.NO_ID
 
         fun <M> create(
@@ -91,13 +93,13 @@ open class OmegaAutoAdapter<M, VH>(
         callback: ((M) -> Unit)? = null
     ) : OmegaListAdapter.ViewHolder<M>(viewGroup, layoutRes) {
 
-        private var item: M? = null
+        private var item: Any? = NULL
 
         init {
             callback?.let {
                 itemView.setClickListener {
-                    item?.let {
-                        callback(it)
+                    if (item != NULL) {
+                        callback(it as M)
                     }
                 }
             }
@@ -123,14 +125,14 @@ open class OmegaAutoAdapter<M, VH>(
         swipeMenuLayoutRes
     ) {
 
-        private var item: M? = null
+        private var item: Any? = NULL
 
         init {
             itemView.id = R.id.omega_swipe_menu
             callback?.let {
                 contentView.setClickListener {
-                    item?.let {
-                        callback(it)
+                    if (item != NULL) {
+                        callback(it as M)
                     }
                 }
             }
