@@ -99,7 +99,7 @@ open class OmegaAutoAdapter<M, VH>(
             callback?.let {
                 itemView.setClickListener {
                     if (item != NULL) {
-                        callback(it as M)
+                        callback(item as M)
                     }
                 }
             }
@@ -132,7 +132,7 @@ open class OmegaAutoAdapter<M, VH>(
             callback?.let {
                 contentView.setClickListener {
                     if (item != NULL) {
-                        callback(it as M)
+                        callback(item as M)
                     }
                 }
             }
