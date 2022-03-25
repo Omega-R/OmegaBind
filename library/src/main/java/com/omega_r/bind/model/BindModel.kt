@@ -10,11 +10,11 @@ import com.omega_r.bind.model.binders.*
  * Created by Anton Knyazev on 27.02.2019.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
-class BindModel<M>(private val list: List<Binder<*, M>>) {
+class BindModel<M>(private val list: List<Binder<*, in M>>) {
 
     companion object {
 
-        inline fun <M> create(parentModel: BindModel<M>? = null, block: Builder<M>.() -> Unit): BindModel<M> {
+        inline fun <M> create(parentModel: BindModel<in M>? = null, block: Builder<M>.() -> Unit): BindModel<M> {
             return Builder(parentModel)
                 .apply(block)
                 .build()
@@ -24,17 +24,17 @@ class BindModel<M>(private val list: List<Binder<*, M>>) {
             return create(null, block)
         }
 
-        fun <M> create(model1: BindModel<M>, model2: BindModel<M>): BindModel<M> {
+        fun <M> create(model1: BindModel<in M>, model2: BindModel<in M>): BindModel<M> {
             return BindModel(model1, model2.list)
         }
 
     }
 
-    constructor(parentModel: BindModel<M>? = null, list: List<Binder<*, M>>) : this(
+    constructor(parentModel: BindModel<in M>? = null, list: List<Binder<*, in M>>) : this(
         (parentModel?.list ?: emptyList<Binder<*, M>>()) + list
     )
 
-    constructor(vararg binder: Binder<*, M>) : this(binder.toList())
+    constructor(vararg binder: Binder<*, in M>) : this(binder.toList())
 
     fun onViewCreated(activity: Activity) {
         onViewCreated(activity.window.decorView)
@@ -78,7 +78,7 @@ class BindModel<M>(private val list: List<Binder<*, M>>) {
         list.forEach { binder -> binder.dispatchBind(viewCache, item) }
     }
 
-    open class Builder<M>(private val parentModel: BindModel<M>? = null) {
+    open class Builder<M>(private val parentModel: BindModel<in M>? = null) {
 
         private val list: MutableList<Binder<*, M>> = mutableListOf()
 
