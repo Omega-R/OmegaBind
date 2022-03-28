@@ -23,3 +23,13 @@ fun <M> BindModel.Builder<M>.bindViewState(
     viewStateFunction: (View, Boolean) -> Unit,
     selector: (M) -> Boolean
 ) = bindBinder(ViewStateBinder(id, viewStateFunction, selector))
+
+fun <M> BindModel.Builder<M>.bindSelected(
+    id: Int,
+    selector: (M) -> Boolean
+) = bindViewState(id, selector = selector, viewStateFunction = { view, value -> view.isSelected = value})
+
+fun <M> BindModel.Builder<M>.bindActivated(
+    id: Int,
+    selector: (M) -> Boolean
+) = bindViewState(id, selector = selector, viewStateFunction = { view, value -> view.isActivated = value})

@@ -17,4 +17,4 @@ class LambdaMultiViewBinder<V : View, M>(id: Int, vararg ids: Int, private val b
     "REDUNDANT_SPREAD_OPERATOR_IN_NAMED_FORM_IN_FUNCTION"
 )
 fun <V : View, M> BindModel.Builder<M>.bindMultiCustom(id: Int, vararg ids: Int, block: (SparseArray<V>, M) -> Unit) =
-    LambdaMultiViewBinder(id, ids = *ids, block = block)
+    bindBinder(LambdaMultiViewBinder(id, ids = *ids, block = block))

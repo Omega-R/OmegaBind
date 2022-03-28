@@ -52,3 +52,23 @@ fun <M> BindModel.Builder<M>.bindVisible(
 ) = bindBinder(
     VisibleBinder(id, trueVisibility, falseVisibility, nullVisibility, *properties)
 )
+
+fun <M> BindModel.Builder<M>.bindGone(
+    @IdRes id: Int,
+    trueVisibility: Int = View.GONE,
+    falseVisibility: Int = View.VISIBLE,
+    nullVisibility: Int = View.VISIBLE,
+    vararg properties: KProperty<*>
+) = bindBinder(
+    VisibleBinder(id, trueVisibility, falseVisibility, nullVisibility, *properties)
+)
+
+fun <M> BindModel.Builder<M>.bindInvisible(
+    @IdRes id: Int,
+    trueVisibility: Int = View.INVISIBLE,
+    falseVisibility: Int = View.VISIBLE,
+    nullVisibility: Int = View.VISIBLE,
+    vararg properties: KProperty<*>
+) = bindBinder(
+    VisibleBinder(id, trueVisibility, falseVisibility, nullVisibility, *properties)
+)
