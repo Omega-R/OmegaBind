@@ -15,7 +15,7 @@ class BindModel<M>(private val list: List<Binder<*, in M>>) {
     companion object {
 
         inline fun <M> create(parentModel: BindModel<in M>? = null, block: Builder<M>.() -> Unit): BindModel<M> {
-            return Builder(parentModel)
+            return AdapterBuilder(parentModel)
                 .apply(block)
                 .build()
         }
@@ -78,11 +78,15 @@ class BindModel<M>(private val list: List<Binder<*, in M>>) {
         list.forEach { binder -> binder.dispatchBind(viewCache, item) }
     }
 
-    open class Builder<M>(private val parentModel: BindModel<in M>? = null) {
+    interface Builder<M> {
+        fun bindBinder(binder: Binder<*, M>): Binder<*, M>
+    }
+
+    open class AdapterBuilder<M>(private val parentModel: BindModel<in M>? = null): Builder<M> {
 
         private val list: MutableList<Binder<*, M>> = mutableListOf()
 
-        fun bindBinder(binder: Binder<*, M>) = binder.apply {
+        override fun bindBinder(binder: Binder<*, M>) = binder.apply {
             list += binder
         }
 

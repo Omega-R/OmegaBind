@@ -12,6 +12,7 @@ import com.omega_r.bind.delegates.managers.BindersManager.BindType.RESETTABLE
 import com.omega_r.bind.delegates.managers.BindersManager.BindType.RESETTABLE_WITH_AUTO_INIT
 import com.omega_r.bind.adapters.OmegaAutoAdapter
 import com.omega_r.bind.model.BindModel
+import com.omega_r.bind.model.binders.Binder
 import com.omega_r.click.OmegaContextable
 import com.omega_r.click.OmegaViewFindable
 
@@ -19,7 +20,7 @@ import com.omega_r.click.OmegaViewFindable
  * Created by Anton Knyazev on 04.04.2019.
  */
 @Suppress("unused")
-interface OmegaBindable : OmegaContextable, OmegaViewFindable {
+interface OmegaBindable : OmegaContextable, OmegaViewFindable, BindModel.Builder<Any> {
 
 
     private val resources: Resources
@@ -29,7 +30,7 @@ interface OmegaBindable : OmegaContextable, OmegaViewFindable {
 
     private fun <T : View> findView(id: Int): T {
         return findViewById(id)
-            ?: error("Bind is not found R.id.${this.getContext()!!.resources.getResourceEntryName(id)} (${this::class.java.name})")
+            ?: error("Bind is not found R.id.${getContext()!!.resources.getResourceEntryName(id)} (${this::class.java.name})")
     }
 
     private fun <T : View> findViewOrNull(id: Int): T? {
@@ -144,5 +145,7 @@ interface OmegaBindable : OmegaContextable, OmegaViewFindable {
     fun bindAnimator(@AnimatorRes res: Int) = bindersManager.bind(findInit = {
         AnimatorInflater.loadAnimator(getContext(), res)
     })
+
+    override fun bindBinder(binder: Binder<*, Any>): Binder<*, Any> = binder
 
 }

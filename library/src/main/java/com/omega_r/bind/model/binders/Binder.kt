@@ -2,13 +2,20 @@ package com.omega_r.bind.model.binders
 
 import android.util.SparseArray
 import android.view.View
+import androidx.core.util.getOrElse
 import kotlin.reflect.KProperty
 
 abstract class Binder<V : View, M> {
 
+    private companion object {
+        private val NULL = Binder::class
+    }
+
     abstract val id: Int
 
     var viewOptionally: Boolean = false
+
+    private var value: Any? = NULL
 
     internal open fun dispatchOnViewCreated(view: View, viewCache: SparseArray<View>) {
         @Suppress("UNCHECKED_CAST")
@@ -26,9 +33,16 @@ abstract class Binder<V : View, M> {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    operator fun getValue(thisRef: Any, property: KProperty<*>): M = value as M
+
+    operator fun setValue(thisRef: Any, property: KProperty<*>, value: M) {
+        this.value = value
+    }
+
     abstract fun bind(itemView: V, item: M)
 
-    protected fun SparseArray<MutableSet<Binder<*, *>>>.getSet(id: Int) = this[id] ?: let {
+    protected fun SparseArray<MutableSet<Binder<*, *>>>.getSet(id: Int) = getOrElse(id) {
         HashSet<Binder<*, *>>().also {
             put(id, it)
         }
