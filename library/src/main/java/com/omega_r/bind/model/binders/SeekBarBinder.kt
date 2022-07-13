@@ -12,7 +12,7 @@ open class SeekBarBinder<M>(
     private val min: Int? = null,
     private val max: Int? = null,
     private val onChanged: ((view: SeekBar, progress: Int) -> Unit)? = null
-) : Binder<SeekBar, M>() {
+) : Binder<SeekBar, M, Int>() {
 
     override fun onViewCreated(itemView: SeekBar) {
         super.onViewCreated(itemView)

@@ -6,7 +6,7 @@ import com.omega_r.bind.model.BindModel
 
 
 open class CustomBinder<V : View, M>(override val id: Int, val binder: (view: V, item: M) -> Unit) :
-    Binder<V, M>() {
+    Binder<V, M, Any>() {
 
     override fun bind(itemView: V, item: M) = binder(itemView, item)
 

@@ -7,7 +7,7 @@ import androidx.core.util.forEach
 import com.omega_r.bind.model.BindModel
 
 open class VisibleCustomMultiBinder<M>(id: Int, vararg ids: Int, private val queryBlock: (item: M) -> Boolean) :
-    MultiBinder<View, M>(id, *ids) {
+    MultiBinder<View, M, Boolean>(id, *ids) {
 
     override fun bind(views: SparseArray<View>, item: M) {
         val visibility = if (queryBlock(item)) View.VISIBLE else View.GONE

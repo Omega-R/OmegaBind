@@ -11,7 +11,7 @@ open class ProgressBarBinder<M>(
     private vararg val properties: KProperty<*>,
     private val min: Int? = null,
     private val max: Int? = null,
-) : Binder<ProgressBar, M>() {
+) : Binder<ProgressBar, M, Int>() {
 
     override fun onViewCreated(itemView: ProgressBar) {
         super.onViewCreated(itemView)

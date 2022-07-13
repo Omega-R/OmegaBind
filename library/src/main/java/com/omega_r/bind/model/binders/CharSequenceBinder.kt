@@ -8,7 +8,7 @@ import kotlin.reflect.KProperty
 open class CharSequenceBinder<M>(
     override val id: Int,
     private vararg val properties: KProperty<*>
-) : Binder<TextView, M>() {
+) : Binder<TextView, M, CharSequence>() {
 
     override fun bind(itemView: TextView, item: M) = BinderTextWatcher.runTextChangedTransaction(itemView) {
         val charSequence: CharSequence? = item.findValue(item, properties)

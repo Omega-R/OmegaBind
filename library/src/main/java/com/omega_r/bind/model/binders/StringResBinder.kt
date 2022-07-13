@@ -8,7 +8,7 @@ import kotlin.reflect.KProperty
 open class StringResBinder<M>(
     override val id: Int,
     private vararg val properties: KProperty<*>
-) : Binder<TextView, M>() {
+) : Binder<TextView, M, Int>() {
 
     override fun bind(itemView: TextView, item: M) = BinderTextWatcher.runTextChangedTransaction(itemView) {
         val obj: Int? = item.findValue(item, properties)

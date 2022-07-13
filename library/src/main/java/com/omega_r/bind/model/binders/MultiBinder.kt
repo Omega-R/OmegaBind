@@ -3,7 +3,7 @@ package com.omega_r.bind.model.binders
 import android.util.SparseArray
 import android.view.View
 
-abstract class MultiBinder<V : View, M>(final override val id: Int, vararg ids: Int) : Binder<V, M>() {
+abstract class MultiBinder<V : View, M, R>(final override val id: Int, vararg ids: Int) : Binder<V, M, R>() {
 
     private val ids = listOf(id, *ids.toTypedArray())
 
@@ -21,7 +21,7 @@ abstract class MultiBinder<V : View, M>(final override val id: Int, vararg ids: 
 
     abstract fun bind(views: SparseArray<V>, item: M)
 
-    override fun addViewId(array: SparseArray<MutableSet<Binder<*, *>>>) {
+    override fun addViewId(array: SparseArray<MutableSet<Binder<*, *, *>>>) {
         ids.forEach { id -> array.getSet(id) += this }
     }
 

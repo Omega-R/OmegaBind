@@ -146,6 +146,6 @@ interface OmegaBindable : OmegaContextable, OmegaViewFindable, BindModel.Builder
         AnimatorInflater.loadAnimator(getContext(), res)
     })
 
-    override fun bindBinder(binder: Binder<*, Any>): Binder<*, Any> = binder
+    override fun <R> bindBinder(binder: Binder<*, Any, R>): Binder<*, Any, R> = binder
 
 }

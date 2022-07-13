@@ -10,7 +10,7 @@ import kotlin.reflect.KProperty
 class TintColorBinder<M>(
     override val id: Int,
     private val properties: Array<out KProperty<*>>,
-) : Binder<ImageView, M>() {
+) : Binder<ImageView, M, Color>() {
 
     override fun bind(itemView: ImageView, item: M) {
         ImageViewCompat.setImageTintList(

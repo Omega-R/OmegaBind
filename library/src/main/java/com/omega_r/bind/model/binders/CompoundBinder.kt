@@ -10,9 +10,9 @@ open class CompoundBinder<E>(
     override val id: Int,
     private vararg val properties: KProperty<*>,
     private val block: ((E, Boolean) -> Unit)? = null
-) : Binder<CompoundButton, E>() {
+) : Binder<CompoundButton, E, Boolean>() {
 
-    private val autoBinders = mutableListOf<Binder<*, E>>()
+    private val autoBinders = mutableListOf<Binder<*, E, *>>()
 
     override fun dispatchBind(viewCache: SparseArray<View>, item: E) {
         super.dispatchBind(viewCache, item)
@@ -34,7 +34,7 @@ open class CompoundBinder<E>(
         itemView.isChecked = checked ?: false
     }
 
-    fun addAutoUpdateBinder(vararg binders: Binder<*, E>) {
+    fun addAutoUpdateBinder(vararg binders: Binder<*, E, *>) {
         autoBinders += binders
     }
 }

@@ -5,9 +5,9 @@ import android.view.View
 import android.widget.TextView
 import com.omega_r.bind.model.BindModel
 
-open class TextChangedBinder<E>(override val id: Int, private val block: (E, String) -> Unit) : Binder<TextView, E>() {
+open class TextChangedBinder<E>(override val id: Int, private val block: (E, String) -> Unit) : Binder<TextView, E, Any>() {
 
-    private val binders = mutableListOf<Binder<*, E>>()
+    private val binders = mutableListOf<Binder<*, E, *>>()
 
     override fun dispatchOnViewCreated(view: View, viewCache: SparseArray<View>) {
         super.dispatchOnViewCreated(view, viewCache)
@@ -31,7 +31,7 @@ open class TextChangedBinder<E>(override val id: Int, private val block: (E, Str
         BinderTextWatcher.from<E>(itemView).item = item
     }
 
-    fun addAutoUpdateBinder(vararg binders: Binder<*, E>) {
+    fun addAutoUpdateBinder(vararg binders: Binder<*, E, *>) {
         this.binders += binders
     }
 

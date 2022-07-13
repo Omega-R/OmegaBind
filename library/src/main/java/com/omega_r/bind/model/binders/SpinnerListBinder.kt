@@ -16,7 +16,7 @@ open class SpinnerListBinder<M, SM>(
     private val callback: ((M, SM?, Int) -> Unit)? = null,
     private val selector: (M) -> SM?,
     private val converter: (Context, SM, isDropDown: Boolean) -> CharSequence
-) : Binder<Spinner, M>() {
+) : Binder<Spinner, M, List<SM>>() {
 
     override fun onViewCreated(itemView: Spinner) {
         itemView.adapter = OmegaSpinnerAdapter.CustomAdapter(itemView.context, layoutRes, converter).also {

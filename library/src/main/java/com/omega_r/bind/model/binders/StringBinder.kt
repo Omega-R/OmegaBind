@@ -9,7 +9,7 @@ open class StringBinder<M>(
     override val id: Int,
     private vararg val properties: KProperty<*>,
     private val formatter: ((Any?) -> String?)? = null
-) : Binder<TextView, M>() {
+) : Binder<TextView, M, String>() {
 
     override fun bind(itemView: TextView, item: M) = BinderTextWatcher.runTextChangedTransaction(itemView) {
         val obj: Any? = item.findValue(item, properties)

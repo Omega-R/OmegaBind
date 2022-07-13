@@ -9,7 +9,7 @@ import com.omega_r.click.ClickManager
 open class ClickBinder<M>(
     override val id: Int,
     private val block: (M) -> Unit
-) : Binder<View, M>() {
+) : Binder<View, M, Any>() {
 
     override fun onViewCreated(itemView: View) {
         val tag = itemView.getTag(R.id.omega_click_bind) as? ClickManager

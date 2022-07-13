@@ -1,5 +1,6 @@
 package com.omega_r.bind.app
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.SparseArray
@@ -7,11 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import com.omega_r.bind.adapters.OmegaAutoAdapter
+import com.omega_r.bind.delegates.OmegaBindable
+import com.omega_r.bind.delegates.managers.BindersManager
 import com.omega_r.bind.views.OmegaBindView
 import com.omega_r.bind.model.BindModel
 import com.omega_r.bind.model.binders.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OmegaBindable {
+
+    override val bindersManager = BindersManager()
 
     private val bindModel = BindModel.create<String> {
         bindString(R.id.NO_DEBUG)
@@ -38,5 +43,13 @@ class MainActivity : AppCompatActivity() {
 
         addContentView(bindView, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
     }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        bindersManager.doAutoInit()
+    }
+
+    override fun getContext(): Context? = this
+
 
 }

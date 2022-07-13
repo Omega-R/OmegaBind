@@ -9,7 +9,7 @@ import com.omega_r.click.ClickManager
 open class LongClickBinder<M>(
     override val id: Int,
     private val block: (M) -> Boolean
-) : Binder<View, M>() {
+) : Binder<View, M, Any>() {
 
     override fun bind(itemView: View, item: M) {
         itemView.setOnLongClickListener {

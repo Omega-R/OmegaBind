@@ -5,7 +5,7 @@ import android.view.View
 import com.omega_r.bind.model.BindModel
 
 class LambdaMultiViewBinder<V : View, M>(id: Int, vararg ids: Int, private val block: (SparseArray<V>, M) -> Unit) :
-    MultiBinder<V, M>(id, *ids) {
+    MultiBinder<V, M, Any>(id, *ids) {
 
     override fun bind(views: SparseArray<V>, item: M) {
         block(views, item)

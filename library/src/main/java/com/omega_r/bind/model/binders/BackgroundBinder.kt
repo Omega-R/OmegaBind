@@ -13,7 +13,7 @@ open class BackgroundBinder<M>(
     override val id: Int,
     private vararg val properties: KProperty<*>,
     private val placeholderResId: Int = 0
-) : Binder<View, M>() {
+) : Binder<View, M, Image>() {
 
     override fun bind(itemView: View, item: M) {
         itemView.setBackground(item.findValue(item, properties), placeholderResId)

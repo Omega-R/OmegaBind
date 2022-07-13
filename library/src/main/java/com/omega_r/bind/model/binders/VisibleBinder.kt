@@ -11,7 +11,7 @@ open class VisibleBinder<M>(
     private val falseVisibility: Int = View.GONE,
     private val nullVisibility: Int = View.GONE,
     private vararg val properties: KProperty<*>
-) : Binder<View, M>() {
+) : Binder<View, M, Boolean>() {
 
     override fun bind(itemView: View, item: M) {
         val obj: Any? = item.findValue(item, properties)

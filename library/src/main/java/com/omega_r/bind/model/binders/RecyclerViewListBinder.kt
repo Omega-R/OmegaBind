@@ -14,7 +14,7 @@ open class RecyclerViewListBinder<M, SM>(
     private val callback: ((M, SM) -> Unit)? = null,
     private val parentModel: BindModel<SM>? = null,
     private val block: BindModel.Builder<SM>.() -> Unit
-) : Binder<RecyclerView, M>() {
+) : Binder<RecyclerView, M, List<SM>>() {
 
     override fun onViewCreated(itemView: RecyclerView) {
         itemView.adapter = OmegaAutoAdapter.create(

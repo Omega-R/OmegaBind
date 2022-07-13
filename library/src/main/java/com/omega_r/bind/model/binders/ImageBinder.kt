@@ -11,7 +11,7 @@ open class ImageBinder<M>(
     override val id: Int,
     private vararg val properties: KProperty<*>,
     private val placeholderResId: Int = 0
-) : Binder<ImageView, M>() {
+) : Binder<ImageView, M, Image>() {
 
     override fun bind(itemView: ImageView, item: M) {
         itemView.setImage(item.findValue(item, properties), placeholderResId)

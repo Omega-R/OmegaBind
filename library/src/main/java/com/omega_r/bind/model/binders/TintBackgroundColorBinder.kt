@@ -10,7 +10,7 @@ import kotlin.reflect.KProperty
 class TintBackgroundBinder<M>(
     override val id: Int,
     private val properties: Array<out KProperty<*>>,
-) : Binder<View, M>() {
+) : Binder<View, M, Color>() {
 
     override fun bind(itemView: View, item: M) {
         ViewCompat.setBackgroundTintList(

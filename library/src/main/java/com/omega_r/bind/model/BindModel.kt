@@ -10,7 +10,7 @@ import com.omega_r.bind.model.binders.*
  * Created by Anton Knyazev on 27.02.2019.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
-class BindModel<M>(private val list: List<Binder<*, in M>>) {
+class BindModel<M>(private val list: List<Binder<*, in M, *>>) {
 
     companion object {
 
@@ -30,11 +30,11 @@ class BindModel<M>(private val list: List<Binder<*, in M>>) {
 
     }
 
-    constructor(parentModel: BindModel<in M>? = null, list: List<Binder<*, in M>>) : this(
-        (parentModel?.list ?: emptyList<Binder<*, M>>()) + list
+    constructor(parentModel: BindModel<in M>? = null, list: List<Binder<*, in M, *>>) : this(
+        (parentModel?.list ?: emptyList<Binder<*, M, *>>()) + list
     )
 
-    constructor(vararg binder: Binder<*, in M>) : this(binder.toList())
+    constructor(vararg binder: Binder<*, in M, *>) : this(binder.toList())
 
     fun onViewCreated(activity: Activity) {
         onViewCreated(activity.window.decorView)
@@ -42,7 +42,7 @@ class BindModel<M>(private val list: List<Binder<*, in M>>) {
 
     fun onViewCreated(view: View) {
         val viewCache = SparseArray<View>()
-        val array = SparseArray<MutableSet<Binder<*, *>>>()
+        val array = SparseArray<MutableSet<Binder<*, *, *>>>()
         view.setTag(R.id.omega_autobind, viewCache)
 
         list.forEach { it.addViewId(array) }
@@ -79,14 +79,14 @@ class BindModel<M>(private val list: List<Binder<*, in M>>) {
     }
 
     interface Builder<M> {
-        fun bindBinder(binder: Binder<*, M>): Binder<*, M>
+        fun <R> bindBinder(binder: Binder<*, M, R>): Binder<*, M, R>
     }
 
     open class AdapterBuilder<M>(private val parentModel: BindModel<in M>? = null): Builder<M> {
 
-        private val list: MutableList<Binder<*, M>> = mutableListOf()
+        private val list = mutableListOf<Binder<*, M, *>>()
 
-        override fun bindBinder(binder: Binder<*, M>) = binder.apply {
+        override fun <R> bindBinder(binder: Binder<*, M, R>): Binder<*, M, R> = binder.apply {
             list += binder
         }
 
