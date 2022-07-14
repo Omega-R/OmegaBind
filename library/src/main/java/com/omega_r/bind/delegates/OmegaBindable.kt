@@ -146,6 +146,8 @@ interface OmegaBindable : OmegaContextable, OmegaViewFindable, BindModel.Builder
         AnimatorInflater.loadAnimator(getContext(), res)
     })
 
-    override fun <R> bindBinder(binder: Binder<*, Any, R>): Binder<*, Any, R> = binder
+    override fun <R> bindBinder(binder: Binder<*, Any, R>): Binder<*, Any, R> = binder.apply {
+        viewLazy = bind(binder.id)
+    }
 
 }

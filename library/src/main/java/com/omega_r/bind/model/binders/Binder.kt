@@ -3,9 +3,11 @@ package com.omega_r.bind.model.binders
 import android.util.SparseArray
 import android.view.View
 import androidx.core.util.getOrElse
+import kotlin.properties.Delegates
+import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-abstract class Binder<V : View, M, R> {
+abstract class Binder<V : View, M, R>: ReadWriteProperty<Any, R> {
 
     private companion object {
         private val NULL = Binder::class
@@ -14,6 +16,8 @@ abstract class Binder<V : View, M, R> {
     abstract val id: Int
 
     var viewOptionally: Boolean = false
+
+    internal var viewLazy: Lazy<View>? = null
 
     private var value: Any? = NULL
 
@@ -34,10 +38,12 @@ abstract class Binder<V : View, M, R> {
     }
 
     @Suppress("UNCHECKED_CAST")
-    operator fun getValue(thisRef: Any, property: KProperty<*>): R = value as R
+    override operator fun getValue(thisRef: Any, property: KProperty<*>): R = value as R
 
-    operator fun setValue(thisRef: Any, property: KProperty<*>, value: R) {
+    override operator fun setValue(thisRef: Any, property: KProperty<*>, value: R) {
         this.value = value
+        @Suppress("UNCHECKED_CAST")
+        bind(viewLazy?.value as V, value as M)
     }
 
     abstract fun bind(itemView: V, item: M)
