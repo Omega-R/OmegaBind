@@ -7,7 +7,7 @@ import kotlin.reflect.KProperty
 
 open class StringBinder<M>(
     override val id: Int,
-    private vararg val properties: KProperty<*>,
+    private val properties: Array<out KProperty<*>>,
     private val formatter: ((Any?) -> String?)? = null
 ) : Binder<TextView, M, String>() {
 
@@ -26,4 +26,5 @@ fun <M> BindModel.Builder<M>.bindString(
     @IdRes id: Int,
     vararg properties: KProperty<*>,
     formatter: ((Any?) -> String?)? = null
-) = bindBinder(StringBinder(id, *properties, formatter = formatter))
+) = bindBinder(StringBinder(id, properties, formatter = formatter))
+
