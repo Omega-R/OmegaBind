@@ -80,7 +80,7 @@ abstract class Binder<V : View, M, R>: ReadWriteProperty<Any, R> {
         viewOptionally = true
     }
 
-
-
+    @Suppress("UNCHECKED_CAST")
+    fun asNullType(): Binder<V, M, R?> = this as Binder<V, M, R?>
 
 }
