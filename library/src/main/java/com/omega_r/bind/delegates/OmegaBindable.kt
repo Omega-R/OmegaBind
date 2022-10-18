@@ -2,6 +2,7 @@ package com.omega_r.bind.delegates
 
 import android.animation.AnimatorInflater
 import android.content.res.Resources
+import android.util.SparseArray
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.annotation.*
@@ -147,7 +148,9 @@ interface OmegaBindable : OmegaContextable, OmegaViewFindable, BindModel.Builder
     })
 
     override fun <R> bindBinder(binder: Binder<*, Any, R>): Binder<*, Any, R> = binder.apply {
-        viewLazy = bind(binder.id)
+        viewLazy = bind(binder.id) {
+            binder.dispatchOnViewCreated(this, SparseArray<View>().also { it.put(binder.id, this) })
+        }
     }
 
 }
