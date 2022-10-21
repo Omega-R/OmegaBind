@@ -29,10 +29,18 @@ open class OmegaAutoAdapter<M, VH>(
             @LayoutRes layoutRes: Int,
             callback: ((M) -> Unit)? = null,
             parentModel: BindModel<M>? = null,
+            dividerAllow: DividerAllow<M>? = null,
             block: BindModel.Builder<M>.() -> Unit
         ): OmegaAutoAdapter<M, ViewHolder<M>> {
             val bindModel = BindModel.create(parentModel, block)
-            return OmegaAutoAdapter(ViewHolderFactory(layoutRes, bindModel, callback))
+            return OmegaAutoAdapter(
+                ViewHolderFactory(
+                    layoutRes = layoutRes,
+                    bindModel = bindModel,
+                    callback = callback,
+                    dividerAllow = dividerAllow,
+                )
+            )
         }
 
         fun <M> create(
@@ -40,10 +48,19 @@ open class OmegaAutoAdapter<M, VH>(
             @LayoutRes swipeMenuLayoutRes: Int,
             callback: ((M) -> Unit)? = null,
             parentModel: BindModel<M>? = null,
+            dividerAllow: DividerAllow<M>? = null,
             block: BindModel.Builder<M>.() -> Unit
         ): OmegaAutoAdapter<M, SwipeViewHolder<M>> {
             val bindModel = BindModel.create(parentModel, block)
-            return OmegaAutoAdapter(SwipeViewHolderFactory(layoutRes, swipeMenuLayoutRes, bindModel, callback))
+            return OmegaAutoAdapter(
+                SwipeViewHolderFactory(
+                    layoutRes = layoutRes,
+                    swipeMenuLayoutRes = swipeMenuLayoutRes,
+                    bindModel = bindModel,
+                    callback = callback,
+                    dividerAllow = dividerAllow
+                )
+            )
         }
 
         fun <M> create(
@@ -84,6 +101,14 @@ open class OmegaAutoAdapter<M, VH>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return viewHolderFactory.createViewHolder(parent, this, viewType)
+    }
+
+    override fun isDividerAllowedAbove(position: Int): Boolean {
+        return viewHolderFactory.dividerAllow?.isDividerAllowedAbove(list[position], position) ?: true
+    }
+
+    override fun isDividerAllowedBelow(position: Int): Boolean {
+        return viewHolderFactory.dividerAllow?.isDividerAllowedBelow(list[position], position) ?: true
     }
 
     class ViewHolder<M>(
@@ -150,8 +175,17 @@ open class OmegaAutoAdapter<M, VH>(
         val callback: ((M) -> Unit)?
     }
 
-    abstract class Factory<M, VH> where VH : OmegaRecyclerView.ViewHolder, VH : ViewHolderBindable<M> {
+    interface DividerAllow<M> {
 
+        fun isDividerAllowedAbove(item: M, position: Int): Boolean
+
+        fun isDividerAllowedBelow(item: M, position: Int): Boolean
+    }
+
+
+    abstract class Factory<M, VH>(
+        internal var dividerAllow: DividerAllow<M>?
+    ) where VH : OmegaRecyclerView.ViewHolder, VH : ViewHolderBindable<M> {
 
         open fun getItemViewType(
             position: Int,
@@ -169,8 +203,9 @@ open class OmegaAutoAdapter<M, VH>(
     open class ViewHolderFactory<M>(
         private val layoutRes: Int,
         private val bindModel: BindModel<M>,
-        override val callback: ((M) -> Unit)? = null
-    ) : Factory<M, ViewHolder<M>>(), Callbackable<M> {
+        override val callback: ((M) -> Unit)? = null,
+        dividerAllow: DividerAllow<M>? = null
+    ) : Factory<M, ViewHolder<M>>(dividerAllow), Callbackable<M> {
 
         override fun createViewHolder(
             parent: ViewGroup,
@@ -186,8 +221,9 @@ open class OmegaAutoAdapter<M, VH>(
         @LayoutRes private val layoutRes: Int,
         @LayoutRes private val swipeMenuLayoutRes: Int,
         private val bindModel: BindModel<M>,
-        override val callback: ((M) -> Unit)? = null
-    ) : Factory<M, SwipeViewHolder<M>>(), Callbackable<M> {
+        override val callback: ((M) -> Unit)? = null,
+        dividerAllow: DividerAllow<M>? = null
+    ) : Factory<M, SwipeViewHolder<M>>(dividerAllow), Callbackable<M> {
 
         override fun createViewHolder(
             parent: ViewGroup,
@@ -198,8 +234,9 @@ open class OmegaAutoAdapter<M, VH>(
     }
 
     open class MultiHolderFactory<M : Any, VH>(
-        private val map: Map<KClass<M>, Factory<M, VH>>
-    ) : Factory<M, VH>() where VH : OmegaRecyclerView.ViewHolder, VH : ViewHolderBindable<M> {
+        private val map: Map<KClass<M>, Factory<M, VH>>,
+        dividerAllow: DividerAllow<M>? = null
+    ) : Factory<M, VH>(dividerAllow) where VH : OmegaRecyclerView.ViewHolder, VH : ViewHolderBindable<M> {
 
         override fun getItemViewType(
             position: Int,
