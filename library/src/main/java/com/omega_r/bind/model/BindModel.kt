@@ -79,14 +79,14 @@ class BindModel<M>(private val list: List<Binder<*, in M, *>>) {
     }
 
     interface Builder<M> {
-        fun <R> bindBinder(binder: Binder<*, M, R>): Binder<*, M, R>
+        fun <R, V: View> bindBinder(binder: Binder<V, M, R>): Binder<V, M, R>
     }
 
-    open class AdapterBuilder<M>(private val parentModel: BindModel<in M>? = null): Builder<M> {
+    open class AdapterBuilder<M>(private val parentModel: BindModel<in M>? = null) : Builder<M> {
 
         private val list = mutableListOf<Binder<*, M, *>>()
 
-        override fun <R> bindBinder(binder: Binder<*, M, R>): Binder<*, M, R> = binder.apply {
+        override fun <R, V: View> bindBinder(binder: Binder<V, M, R>): Binder<V, M, R> = binder.apply {
             list += binder
         }
 
