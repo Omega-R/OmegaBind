@@ -24,6 +24,12 @@ fun <M> BindModel.Builder<M>.bind(@IdRes id: Int, property: KProperty<String?>, 
 
 fun <M> BindModel.Builder<M>.bindString(
     @IdRes id: Int,
+    property: KProperty<String?>,
+    formatter: ((Any?) -> String?)? = null
+): Binder<TextView, M, String> = bindBinder(StringBinder(id, arrayOf(property), formatter = formatter))
+
+fun <M> BindModel.Builder<M>.bindString(
+    @IdRes id: Int,
     vararg properties: KProperty<*>,
     formatter: ((Any?) -> String?)? = null
 ): Binder<TextView, M, String> = bindBinder(StringBinder(id, properties, formatter = formatter))
