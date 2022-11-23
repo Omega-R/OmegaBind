@@ -32,7 +32,7 @@ class ComplexBinder<V : View, M, M2, R>(
 
 }
 
-inline fun <M, M2: Any> BindModel.Builder<M>.bindComplex(
+inline fun <M, M2> BindModel.Builder<M>.bindComplex(
     parent: BindModel<M2>? = null,
     vararg properties: KProperty<*>,
     block: BindModel.Builder<M2>.() -> Unit
