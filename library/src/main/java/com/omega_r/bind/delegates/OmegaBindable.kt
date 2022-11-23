@@ -7,6 +7,8 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.annotation.*
 import androidx.core.content.ContextCompat
+import androidx.core.util.keyIterator
+import androidx.core.util.set
 import androidx.recyclerview.widget.RecyclerView
 import com.omega_r.bind.delegates.managers.BindersManager
 import com.omega_r.bind.delegates.managers.BindersManager.BindType.RESETTABLE
@@ -74,7 +76,7 @@ interface OmegaBindable : OmegaContextable, OmegaViewFindable, BindModel.Builder
     fun <T : RecyclerView> bind(@IdRes res: Int, adapter: RecyclerView.Adapter<*>, initBlock: T.() -> Unit) =
         bindersManager.bind<T>(RESETTABLE_WITH_AUTO_INIT, { findView(res) }) {
             this.adapter = adapter
-            initBlock()
+            initBlock.invoke(this)
         }
 
     fun <T : View> bind(@IdRes res: Int, initBlock: T.() -> Unit) =
@@ -147,10 +149,29 @@ interface OmegaBindable : OmegaContextable, OmegaViewFindable, BindModel.Builder
         AnimatorInflater.loadAnimator(getContext(), res)
     })
 
-    override fun <R, V: View> bindBinder(binder: Binder<V, Any, R>): Binder<V, Any, R> = binder.apply {
-        viewLazy = bind(binder.id) {
-            binder.dispatchOnViewCreated(this, SparseArray<View>().also { it.put(binder.id, this) })
+    override fun <V : View, R> bindBinder(binder: Binder<V, Any, R>): Binder<V, Any, R> = binder.apply {
+        val viewCache = SparseArray<View>()
+
+        val lazy = bind<View>(binder.id) {
+            viewCache.clear()
+            val array = SparseArray<MutableSet<Binder<*, *, *>>>()
+            binder.addViewId(array)
+            array.keyIterator().forEach { id ->
+                if (binder.id == id) {
+                    viewCache.put(id, this)
+                } else {
+                    viewCache[id] = findView(id)
+                }
+            }
+
+            binder.dispatchOnViewCreated(this, viewCache)
         }
+
+        this.viewCache = lazy(mode = LazyThreadSafetyMode.NONE) {
+            lazy.value
+            viewCache
+        }
+
     }
 
 }

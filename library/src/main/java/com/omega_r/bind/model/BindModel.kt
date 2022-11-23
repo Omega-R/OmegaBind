@@ -10,7 +10,7 @@ import com.omega_r.bind.model.binders.*
  * Created by Anton Knyazev on 27.02.2019.
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
-class BindModel<M>(private val list: List<Binder<*, in M, *>>) {
+class BindModel<M>(val list: List<Binder<*, in M, *>>) {
 
     companion object {
 
@@ -79,14 +79,14 @@ class BindModel<M>(private val list: List<Binder<*, in M, *>>) {
     }
 
     interface Builder<M> {
-        fun <R, V: View> bindBinder(binder: Binder<V, M, R>): Binder<V, M, R>
+        fun <V: View, R> bindBinder(binder: Binder<V, M, R>): Binder<V, M, R>
     }
 
     open class AdapterBuilder<M>(private val parentModel: BindModel<in M>? = null) : Builder<M> {
 
         private val list = mutableListOf<Binder<*, M, *>>()
 
-        override fun <R, V: View> bindBinder(binder: Binder<V, M, R>): Binder<V, M, R> = binder.apply {
+        override fun <V : View, R> bindBinder(binder: Binder<V, M, R>): Binder<V, M, R> = binder.apply {
             list += binder
         }
 

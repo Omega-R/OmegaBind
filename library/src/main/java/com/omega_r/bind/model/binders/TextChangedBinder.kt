@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.TextView
 import com.omega_r.bind.model.BindModel
 
-open class TextChangedBinder<E, R>(override val id: Int, private val block: (R, String) -> Unit) : Binder<TextView, E, R>() {
+open class TextChangedBinder<E, R>(override val id: Int, private val block: (E, String) -> Unit) : Binder<TextView, E, R>() {
 
     private val binders = mutableListOf<Binder<*, E, *>>()
 
@@ -21,7 +21,7 @@ open class TextChangedBinder<E, R>(override val id: Int, private val block: (R, 
     }
 
     override fun onViewCreated(itemView: TextView) {
-        BinderTextWatcher.from<R>(itemView).let {
+        BinderTextWatcher.from<E>(itemView).let {
             it.callbacks.add(block)
             itemView.addTextChangedListener(it)
         }
@@ -37,10 +37,8 @@ open class TextChangedBinder<E, R>(override val id: Int, private val block: (R, 
 
 }
 
-fun <M> BindModel.Builder<M>.bindTextChanged(id: Int, textChangedBlock: ((M, String) -> Unit)) =
+fun <M> BindModel.Builder<M>.bindTextChanged(id: Int, textChangedBlock: ((M, String) -> Unit)): Binder<TextView, M, M> =
     bindBinder(TextChangedBinder(id, textChangedBlock))
 
-fun <M> BindModel.Builder<Any>.bindTextChanged(id: Int, textChangedBlock: (String) -> Unit) =
-    bindBinder(TextChangedBinder<Any, M>(id) { _, string ->
-        textChangedBlock(string)
-    })
+fun <M, R> BindModel.Builder<M>.bindTextChanged(id: Int, textChangedBlock: (String) -> Unit): Binder<TextView, M, R> =
+    bindBinder(TextChangedBinder(id) { _, string -> textChangedBlock(string) })

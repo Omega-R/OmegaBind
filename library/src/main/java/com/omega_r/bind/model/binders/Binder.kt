@@ -3,11 +3,10 @@ package com.omega_r.bind.model.binders
 import android.util.SparseArray
 import android.view.View
 import androidx.core.util.getOrElse
-import kotlin.properties.Delegates
-import kotlin.properties.ReadWriteProperty
+import com.omega_r.bind.delegates.OmegaBindable
 import kotlin.reflect.KProperty
 
-abstract class Binder<V : View, M, R>: ReadWriteProperty<Any, R> {
+abstract class Binder<V : View, M, R> {
 
     private companion object {
         private val NULL = Binder::class
@@ -17,7 +16,7 @@ abstract class Binder<V : View, M, R>: ReadWriteProperty<Any, R> {
 
     var viewOptionally: Boolean = false
 
-    internal var viewLazy: Lazy<View>? = null
+    internal var viewCache: Lazy<SparseArray<View>>? = null
 
     private var value: Any? = NULL
 
@@ -44,13 +43,13 @@ abstract class Binder<V : View, M, R>: ReadWriteProperty<Any, R> {
     }
 
     @Suppress("UNCHECKED_CAST")
-    override operator fun getValue(thisRef: Any, property: KProperty<*>): R = value as R
+    operator fun getValue(thisRef: OmegaBindable, property: KProperty<*>): R = value as R
 
     @Suppress("UNCHECKED_CAST")
-    override operator fun setValue(thisRef: Any, property: KProperty<*>, value: R) {
+    operator fun setValue(thisRef: OmegaBindable, property: KProperty<*>, value: R) {
         this.value = value
-        bind(viewLazy?.value as V, value as M)
-        onBindListener?.invoke(viewLazy?.value as V, value as M)
+        dispatchBind(viewCache!!.value, value as M)
+        onBindListener?.invoke(viewCache!!.value.get(id) as V, value as M)
     }
 
     abstract fun bind(itemView: V, item: M)
@@ -66,7 +65,7 @@ abstract class Binder<V : View, M, R>: ReadWriteProperty<Any, R> {
     }
 
     @Suppress("UNCHECKED_CAST")
-    protected fun <T> Any?.findValue(item: Any?, properties: Array<out KProperty<*>>): T? {
+    protected fun <T: Any?> Any?.findValue(item: Any?, properties: Array<out KProperty<*>>): T? {
         var obj: Any? = item
         if (obj == null || obj::class.java === Any::class.java) {
             return null

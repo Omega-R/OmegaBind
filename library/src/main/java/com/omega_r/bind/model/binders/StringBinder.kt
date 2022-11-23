@@ -26,5 +26,5 @@ fun <M> BindModel.Builder<M>.bindString(
     @IdRes id: Int,
     vararg properties: KProperty<*>,
     formatter: ((Any?) -> String?)? = null
-) = bindBinder(StringBinder(id, properties, formatter = formatter))
+): Binder<TextView, M, String> = bindBinder(StringBinder(id, properties, formatter = formatter))
 

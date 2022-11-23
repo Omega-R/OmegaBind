@@ -1,12 +1,10 @@
 package com.omega_r.bind.model.binders
 
 import android.view.View
-import android.widget.ImageView
 import androidx.annotation.IdRes
 import com.omega_r.bind.model.BindModel
 import com.omega_r.libs.omegatypes.image.Image
 import com.omega_r.libs.omegatypes.image.setBackground
-import com.omega_r.libs.omegatypes.image.setImage
 import kotlin.reflect.KProperty
 
 open class BackgroundBinder<M>(
