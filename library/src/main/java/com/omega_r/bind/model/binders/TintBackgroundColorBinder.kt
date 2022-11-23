@@ -15,7 +15,7 @@ class TintBackgroundBinder<M>(
     override fun bind(itemView: View, item: M) {
         ViewCompat.setBackgroundTintList(
             itemView,
-            (item.findValue(itemView, properties) as? Color)?.getColorStateList(itemView.context)
+            (item.findValue(item, properties) as? Color)?.getColorStateList(itemView.context)
         )
     }
 }

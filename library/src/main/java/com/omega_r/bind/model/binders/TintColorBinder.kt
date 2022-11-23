@@ -15,7 +15,7 @@ class TintColorBinder<M>(
     override fun bind(itemView: ImageView, item: M) {
         ImageViewCompat.setImageTintList(
             itemView,
-            (item.findValue(itemView, properties) as? Color)?.getColorStateList(itemView.context)
+            (item.findValue(item, properties) as? Color)?.getColorStateList(itemView.context)
         )
     }
 }

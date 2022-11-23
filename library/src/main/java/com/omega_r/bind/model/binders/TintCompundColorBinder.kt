@@ -15,7 +15,7 @@ class TintCompoundColorBinder<M>(
     override fun bind(itemView: TextView, item: M) {
         TextViewCompat.setCompoundDrawableTintList(
             itemView,
-            (item.findValue(itemView, properties) as? Color)?.getColorStateList(itemView.context)
+            (item.findValue(item, properties) as? Color)?.getColorStateList(itemView.context)
         )
     }
 }
