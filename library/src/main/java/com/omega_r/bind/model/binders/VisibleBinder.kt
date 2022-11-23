@@ -42,6 +42,14 @@ fun <M> BindModel.Builder<M>.bindNonNullVisible(
     property: KProperty<*>
 ) = bindVisible(id, trueVisibility, falseVisibility, nullVisibility, *arrayOf(property))
 
+@Suppress("RemoveRedundantSpreadOperator")
+fun <M> BindModel.Builder<M>.bindNonNullVisible(
+    @IdRes id: Int,
+    trueVisibility: Int = View.VISIBLE,
+    falseVisibility: Int = View.GONE,
+    nullVisibility: Int = View.GONE
+) = bindVisible(id, trueVisibility, falseVisibility, nullVisibility, *emptyArray())
+
 
 fun <M> BindModel.Builder<M>.bindVisible(
     @IdRes id: Int,
