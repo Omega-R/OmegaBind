@@ -8,7 +8,10 @@ import kotlin.reflect.KProperty
 class ComplexBinder<V : View, M, M2, R>(
     private val binders: List<Binder<out View, in M2, out R>>,
     private val properties: Array<out KProperty<*>> = emptyArray(),
-    ) : MultiBinder<V, M, R>(binders.getOrNull(0)?.id ?: -1, *(binders.drop(0).map { it.id }.toIntArray())) {
+) : Binder<V, M, R>() {
+
+    override val id: Int
+        get() = binders.getOrNull(0)?.id ?: -1
 
     override fun dispatchOnViewCreated(view: View, viewCache: SparseArray<View>) {
         super.dispatchOnViewCreated(view, viewCache)
@@ -26,7 +29,13 @@ class ComplexBinder<V : View, M, M2, R>(
         }
     }
 
-    override fun bind(views: SparseArray<V>, item: M) {
+    override fun addViewId(array: SparseArray<MutableSet<Binder<*, *, *>>>) {
+        binders.forEach {
+            it.addViewId(array)
+        }
+    }
+
+    override fun bind(itemView: V, item: M) {
         // nothing
     }
 
@@ -42,7 +51,7 @@ inline fun <M, M2> BindModel.Builder<M>.bindComplex(
     return bindBinder(ComplexBinder(list, properties))
 }
 
-inline fun <M, M2: Any> BindModel.Builder<M>.bindComplex(
+inline fun <M, M2 : Any> BindModel.Builder<M>.bindComplex(
     parent: BindModel<M2>? = null,
     property: KProperty<M2>,
     block: BindModel.Builder<M2>.() -> Unit
