@@ -104,11 +104,11 @@ open class OmegaAutoAdapter<M, VH>(
     }
 
     override fun isDividerAllowedAbove(position: Int): Boolean {
-        return viewHolderFactory.dividerAllow?.isDividerAllowedAbove(list[position], position) ?: true
+        return viewHolderFactory.dividerAllow?.isDividerAllowedAbove(list.getOrNull(position), position) ?: true
     }
 
     override fun isDividerAllowedBelow(position: Int): Boolean {
-        return viewHolderFactory.dividerAllow?.isDividerAllowedBelow(list[position], position) ?: true
+        return viewHolderFactory.dividerAllow?.isDividerAllowedBelow(list.getOrNull(position), position) ?: true
     }
 
     class ViewHolder<M>(
@@ -177,9 +177,9 @@ open class OmegaAutoAdapter<M, VH>(
 
     interface DividerAllow<M> {
 
-        fun isDividerAllowedAbove(item: M, position: Int): Boolean
+        fun isDividerAllowedAbove(item: M?, position: Int): Boolean
 
-        fun isDividerAllowedBelow(item: M, position: Int): Boolean
+        fun isDividerAllowedBelow(item: M?, position: Int): Boolean
     }
 
 
