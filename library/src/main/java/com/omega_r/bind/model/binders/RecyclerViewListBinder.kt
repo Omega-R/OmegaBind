@@ -13,6 +13,7 @@ open class RecyclerViewListBinder<M, SM>(
     private val layoutRes: Int,
     private val callback: ((M, SM) -> Unit)? = null,
     private val parentModel: BindModel<SM>? = null,
+    private val dividerAllow: OmegaAutoAdapter.DividerAllow<SM>? = null,
     private val block: BindModel.Builder<SM>.() -> Unit
 ) : Binder<RecyclerView, M, List<SM>>() {
 
@@ -21,6 +22,7 @@ open class RecyclerViewListBinder<M, SM>(
             layoutRes = layoutRes,
             callback = callback?.let { Callback(callback) },
             parentModel = parentModel,
+            dividerAllow = dividerAllow,
             block = block
         )
     }
@@ -64,8 +66,17 @@ fun <SM, M> BindModel.Builder<M>.bindList(
     layoutRes: Int,
     property: KProperty<List<SM>>,
     callback: ((M, SM) -> Unit)? = null,
+    dividerAllow: OmegaAutoAdapter.DividerAllow<SM>? = null,
     block: BindModel.Builder<SM>.() -> Unit
-) = bindList(id, layoutRes, properties = *arrayOf(property), block = block, callback = callback)
+) = bindList(
+    id,
+    layoutRes,
+    properties = *arrayOf(property),
+    block = block,
+    parentModel = null,
+    dividerAllow = dividerAllow,
+    callback = callback,
+)
 
 
 fun <SM, M> BindModel.Builder<M>.bindList(
@@ -74,6 +85,7 @@ fun <SM, M> BindModel.Builder<M>.bindList(
     vararg properties: KProperty<*>,
     callback: ((M, SM) -> Unit)? = null,
     parentModel: BindModel<SM>? = null,
+    dividerAllow: OmegaAutoAdapter.DividerAllow<SM>? = null,
     block: BindModel.Builder<SM>.() -> Unit
 ) = bindBinder(
     RecyclerViewListBinder(
@@ -82,6 +94,7 @@ fun <SM, M> BindModel.Builder<M>.bindList(
         layoutRes = layoutRes,
         block = block,
         parentModel = parentModel,
+        dividerAllow = dividerAllow,
         callback = callback
     )
 )
