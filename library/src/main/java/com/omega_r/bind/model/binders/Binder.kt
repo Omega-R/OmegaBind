@@ -43,7 +43,7 @@ abstract class Binder<V : View, M, R> {
     }
 
     @Suppress("UNCHECKED_CAST")
-    operator fun getValue(thisRef: OmegaBindable, property: KProperty<*>): R = value as R
+    operator fun getValue(thisRef: OmegaBindable, property: KProperty<*>): R = value.takeIf { it != NULL } as R
 
     @Suppress("UNCHECKED_CAST")
     operator fun setValue(thisRef: OmegaBindable, property: KProperty<*>, value: R) {
