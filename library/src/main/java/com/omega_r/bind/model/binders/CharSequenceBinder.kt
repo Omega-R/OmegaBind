@@ -7,12 +7,13 @@ import kotlin.reflect.KProperty
 
 open class CharSequenceBinder<M>(
     override val id: Int,
-    private vararg val properties: KProperty<*>
+    private vararg val properties: KProperty<*>,
+    private val defaultValue: CharSequence? = null
 ) : Binder<TextView, M>() {
 
     override fun bind(itemView: TextView, item: M) = BinderTextWatcher.runTextChangedTransaction(itemView) {
         val charSequence: CharSequence? = item.findValue(item, properties)
-        itemView.text = charSequence
+        itemView.text = charSequence?.takeIf { it.isNotEmpty() } ?: defaultValue
     }
 
 }
